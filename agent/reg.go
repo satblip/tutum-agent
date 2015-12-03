@@ -27,7 +27,7 @@ type RegPostForm struct {
 type RegPatchForm struct {
 	Public_cert   string `json:"public_cert"`
 	AgentVersion  string `json:"agent_version"`
-	DockerVersion string `json:"docker_version"`
+	DockerVersion string `json:"docker_version,omitempty"`
 }
 
 type RegGetForm struct {
