@@ -67,6 +67,10 @@ func main() {
 		CreateCerts(keyFilePath, certFilePath, Conf.CertCommonName)
 	}
 
+	if utils.FileExist(dockerBinPath) {
+		DockerClientVersion = GetDockerClientVersion(dockerBinPath)
+	}
+
 	if !*FlagStandalone {
 		Logger.Printf("Registering in Tutum via PATCH: %s",
 			regUrl+Conf.TutumUUID)
@@ -84,6 +88,7 @@ func main() {
 			PostToTutum(regUrl, caFilePath, configFilePath)
 
 			CreateCerts(keyFilePath, certFilePath, Conf.CertCommonName)
+			DownloadDocker(DockerBinaryURL, dockerBinPath)
 
 			Logger.Printf("Registering in Tutum via PATCH: %s",
 				regUrl+Conf.TutumUUID)
@@ -99,6 +104,7 @@ func main() {
 	}
 
 	DownloadDocker(DockerBinaryURL, dockerBinPath)
+	CreateDockerSymlink(dockerBinPath, DockerSymbolicLink)
 	HandleSig()
 	syscall.Setpriority(syscall.PRIO_PROCESS, os.Getpid(), RenicePriority)
 

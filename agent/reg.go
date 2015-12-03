@@ -21,12 +21,13 @@ type RegResponseForm struct {
 }
 
 type RegPostForm struct {
-	Version string `json:"agent_version"`
+	AgentVersion string `json:"agent_version"`
 }
 
 type RegPatchForm struct {
-	Public_cert string `json:"public_cert"`
-	Version     string `json:"agent_version"`
+	Public_cert   string `json:"public_cert"`
+	AgentVersion  string `json:"agent_version"`
+	DockerVersion string `json:"docker_version"`
 }
 
 type RegGetForm struct {
@@ -45,7 +46,7 @@ type RegGetForm struct {
 
 func PostToTutum(url, caFilePath, configFilePath string) error {
 	form := RegPostForm{}
-	form.Version = VERSION
+	form.AgentVersion = VERSION
 	data, err := json.Marshal(form)
 	if err != nil {
 		SendError(err, "Fatal: Json marshal error", nil)
@@ -57,7 +58,8 @@ func PostToTutum(url, caFilePath, configFilePath string) error {
 
 func PatchToTutum(url, caFilePath, certFilePath, configFilePath string) error {
 	form := RegPatchForm{}
-	form.Version = VERSION
+	form.AgentVersion = VERSION
+	form.DockerVersion = DockerClientVersion
 	cert, err := GetCertificate(certFilePath)
 	if err != nil {
 		SendError(err, "Fatal: Failed to load public certificate", nil)
