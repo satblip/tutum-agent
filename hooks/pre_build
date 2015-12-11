@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+echo "=> Building the binary"
+docker run --rm --privileged -v $(pwd):/src centurylink/golang-builder
+
+if [ ! -f "ngrok" ]; then
+	echo "=> Downloading ngrok client"
+	wget -O ngrok.zip 'https://api.equinox.io/1/Applications/ap_pJSFC5wQYkAyI0FIVwKYs9h1hW/Updates/Asset/ngrok.zip?os=linux&arch=amd64&channel=stable'
+	if ! which unzip > /dev/null; then
+		apt-get update && apt-get install -y unzip
+	fi
+	unzip ngrok.zip
+	rm ngrok.zip
+fi
