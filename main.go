@@ -11,48 +11,37 @@ import (
 )
 
 func main() {
-	if os.Getenv("SERVER_HOST") != "" {
-		SERVER_HOST = os.Getenv("SERVER_HOST")
+	if os.Getenv("SERVER_ADDR") != "" {
+		SERVER_ADDR = os.Getenv("SERVER_ADDR")
 	}
-	fileNgrokCfg := path.Join(WORKDIR, FILENAME_NGROKCFG)
-	fileNgrokLog := path.Join(WORKDIR, FILENAME_NGROKLOG)
-	fileNgrokBin := path.Join(WORKDIR, FILENAME_NGROKBIN)
-	fileUUID := path.Join(WORKDIR, FILENAME_UUID)
-	fileCacert := path.Join(CERTDIR, FILENAME_CACERT)
-	fileCert := path.Join(CERTDIR, FILENAME_CERT)
-	fileKey := path.Join(CERTDIR, FILENAME_KEY)
-	regUrl := UrlJoin(SERVER_HOST, REG_URI)
 
-	log.Print("====================")
+	fileNgrokCfg := path.Join("/", FILENAME_NGROKCFG)
+	fileNgrokLog := path.Join("/", FILENAME_NGROKLOG)
+	fileNgrokBin := path.Join("/", FILENAME_NGROKBIN)
+	fileUUID := path.Join(WORKDIR, FILENAME_UUID)
+	fileCacert := path.Join(WORKDIR, FILENAME_CACERT)
+	fileCert := path.Join(WORKDIR, FILENAME_CERT)
+	fileKey := path.Join(WORKDIR, FILENAME_KEY)
+	regUrl := UrlJoin(SERVER_ADDR, REG_URI)
+
 	_ = os.MkdirAll(WORKDIR, 0755)
-	_ = os.MkdirAll(CERTDIR, 0755)
+
 	token := strings.TrimSpace(os.Getenv("TOKEN"))
-	dockerPid := strings.TrimSpace(os.Getenv("DOCKER_PID"))
-	dockerVersion := strings.TrimSpace(os.Getenv("DOCKER_VERSION"))
 	if token == "" {
 		log.Fatal("Error: empty token")
 	}
-	if dockerPid == "" {
-		log.Fatal("Error: empty docker pid")
-	}
+	dockerVersion := strings.TrimSpace(os.Getenv("DOCKER_VERSION"))
 	if dockerVersion == "" {
 		log.Fatal("Error: empty docker version")
 	}
 
-	opts := GetDockerOpts(fileCacert, fileCert, fileKey)
-
 	if !IsFileExist(fileUUID) {
-		fqdn := RegNewNode(regUrl, token, fileUUID, fileCacert)
+		cacert, fqdn, uuid := RegNewNode(regUrl, token)
+		SaveFile(fileCacert, cacert)
+		SaveFile(fileUUID, uuid)
 		CreateCerts(fileKey, fileCert, fqdn)
-		SetDockerOpts(opts)
-		log.Print("Docker config file is updated")
-		RestartDocker(dockerPid)
-		time.Sleep(10 * time.Second)
-	} else {
-		if SetDockerOpts(opts) {
-			RestartDocker(dockerPid)
-			time.Sleep(10 * time.Second)
-		}
+		log.Print("Done!")
+		os.Exit(0)
 	}
 
 	uuid := LoadFile(fileUUID)

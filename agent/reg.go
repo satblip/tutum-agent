@@ -24,19 +24,17 @@ type RegPatch struct {
 	DockerVersion string `json:"docker_version,omitempty"`
 }
 
-func RegNewNode(regUrl, token, fileUUID, fileCacert string) string {
-	log.Printf("Register as a new node(%s)", regUrl)
+func RegNewNode(regUrl, token string) (string, string, string) {
+	log.Print("Register node to ", regUrl)
 	res := postReg(regUrl, token)
 	log.Print("Fqdn: ", res.FQDN)
 	log.Print("Uuid: ", res.UUID)
-	SaveFile(fileUUID, res.UUID)
-	SaveFile(fileCacert, res.CaCert)
-	return res.FQDN
+	return res.CaCert, res.FQDN, res.UUID
 }
 
 func UpdateNode(regUrl, token, uuid, cert, dockerVersion string) {
 	url := UrlJoin(regUrl, uuid)
-	log.Printf("Update node information and report to tutum(%s)", url)
+	log.Print("Update node information to ", url)
 	patchReg(url, token, cert, dockerVersion)
 }
 

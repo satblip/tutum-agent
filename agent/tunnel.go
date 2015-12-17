@@ -112,7 +112,7 @@ func monitorTunnels(url, token, fileNgrokLog string) {
 		if strings.Contains(line.Text, "[INFO] [client] Tunnel established at") {
 			terms := strings.Split(line.Text, " ")
 			tunnel := terms[len(terms)-1]
-			log.Print("Found new tunnel: ", tunnel)
+			log.Print("New tunnel found: ", tunnel)
 			if tunnel != "" {
 				sendTunnel(url, token, tunnel)
 			}
@@ -133,7 +133,7 @@ func sendTunnel(url, token, tunnel string) {
 	if err != nil {
 		log.Print("Failed to send tunnel address to Tutum: ", err)
 	} else {
-		log.Print("New tunnel has been set up")
+		log.Print("New tunnel has been established")
 		log.Print("Done!")
 	}
 }

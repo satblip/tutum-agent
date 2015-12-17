@@ -1,8 +1,7 @@
 package agent
 
 const (
-	WORKDIR            = "/"
-	CERTDIR            = "/etc/tutum"
+	WORKDIR            = "/etc/tutum"
 	REG_URI            = "api/agent/node/"
 	ERROR_CODE         = 1
 	FILENAME_UUID      = "uuid"
@@ -22,5 +21,5 @@ const (
 )
 
 var (
-	SERVER_HOST = "https://dashboard.tutum.co"
+	SERVER_ADDR = "https://dashboard.tutum.co"
 )
