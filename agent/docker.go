@@ -22,10 +22,9 @@ func DownloadDocker(url, dockerBinPath string) {
 		Logger.Println("Downloading docker binary...")
 		downloadFile(url, dockerBinPath, "docker")
 	}
-	createDockerSymlink(dockerBinPath, DockerSymbolicLink)
 }
 
-func getDockerClientVersion(dockerBinPath string) (version string) {
+func GetDockerClientVersion(dockerBinPath string) (version string) {
 	var versionStr string
 	out, err := exec.Command("docker", "-v").Output()
 	if err != nil {
@@ -45,7 +44,7 @@ func getDockerClientVersion(dockerBinPath string) (version string) {
 }
 
 func getDockerStartOpt(dockerBinPath, keyFilePath, certFilePath, caFilePath string) []string {
-	ver := getDockerClientVersion(dockerBinPath)
+	ver := GetDockerClientVersion(dockerBinPath)
 	v, err := semver.Make(ver)
 	if err != nil {
 		Logger.Println("Cannot get semantic version of", ver)
@@ -134,7 +133,7 @@ func UpdateDocker(dockerBinPath, dockerNewBinPath, dockerNewBinSigPath, keyFileP
 				SendError(err, "Failed to remove the docker sig file", nil)
 				Logger.Println(err)
 			}
-			createDockerSymlink(dockerBinPath, DockerSymbolicLink)
+			CreateDockerSymlink(dockerBinPath, DockerSymbolicLink)
 			ScheduleToTerminateDocker = false
 			StartDocker(dockerBinPath, keyFilePath, certFilePath, caFilePath)
 			Logger.Println("Docker binary updated successfully")
@@ -167,7 +166,7 @@ func verifyDockerSig(dockerNewBinPath, dockerNewBinSigPath string) bool {
 	return true
 }
 
-func createDockerSymlink(dockerBinPath, dockerSymbolicLink string) {
+func CreateDockerSymlink(dockerBinPath, dockerSymbolicLink string) {
 	if err := os.RemoveAll(DockerSymbolicLink); err != nil {
 		SendError(err, "Failed to remove the old docker symbolic link", nil)
 		Logger.Println(err)

@@ -106,6 +106,7 @@ EOF
       --conflicts docker \
       --conflicts docker.io \
       --conflicts lxc-docker \
+      --conflicts docker-engine \
       --depends "/bin/sh" \
       --depends iptables \
       --depends gnupg \
