@@ -105,6 +105,7 @@ EOF
       --conflicts docker \
       --conflicts docker.io \
       --conflicts lxc-docker \
+      --conflicts docker-engine \
       --deb-recommends "cgroup-lite | cgroupfs-mount" \
       --depends aufs-tools \
       --depends iptables \
